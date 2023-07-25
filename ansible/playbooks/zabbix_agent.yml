@@ -1,0 +1,29 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install Zabbix-Agent on RedHat Family
+    shell: yum localinstall -y https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-agent-5.0.8-1.el7.x86_64.rpm
+    when:
+      ansible_os_family == "RedHat"
+    notify:
+      - Config setting
+      - zabbix-agent systemd
+  - name: Install zabbix-agent on Ubuntu
+    apt:
+      name=zabbix-agent
+      state=latest
+    when:
+      ansible_os_family == "Debian"
+    notify:
+      - Config setting
+      - zabbix-agent systemd
+  handlers:
+  - name: Config setting
+    shell: sed -i 's/Server=127.0.0.1/Server=158.160.96.98/1' /etc/zabbix/zabbix_agentd.conf && hostname | xargs -i sed -i 's/# Hostname=/Hostname={}/1' /etc/zabbix/zabbix_agentd.conf
+  - name: zabbix-agent systemd
+    systemd:
+      name: zabbix-agent.service
+      enabled: yes
+      state: started
