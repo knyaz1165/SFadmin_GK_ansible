@@ -1,0 +1,18 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install filebeat on Ubuntu
+    apt:
+      deb: https://www.techplanet.pro/d/filebeat-7.17.1-amd64.deb
+    when:
+      ansible_os_family == "Debian"
+    notify:
+      - filebeat systemd
+  handlers:
+  - name:  filebeat systemd
+    systemd:
+      name: filebeat.service
+      enabled: yes
+      state: started

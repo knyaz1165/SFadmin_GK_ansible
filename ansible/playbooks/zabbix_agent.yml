@@ -21,7 +21,7 @@
       - zabbix-agent systemd
   handlers:
   - name: Config setting
-    shell: sed -i 's/Server=127.0.0.1/Server=158.160.96.98/1' /etc/zabbix/zabbix_agentd.conf && hostname | xargs -i sed -i 's/# Hostname=/Hostname={}/1' /etc/zabbix/zabbix_agentd.conf
+    shell: sed -i 's/Server=127.0.0.1/Server=10.8.0.1/1' /etc/zabbix/zabbix_agentd.conf && hostname | xargs -i sed -i 's/# Hostname=/Hostname={}/1' /etc/zabbix/zabbix_agentd.conf
   - name: zabbix-agent systemd
     systemd:
       name: zabbix-agent.service

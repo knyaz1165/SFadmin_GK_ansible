@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: Ubuntu Install php7.4
+    apt:
+      name=php7.4
+      state=latest
+    when:
+      ansible_os_family == "Debian"

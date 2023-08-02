@@ -3,17 +3,17 @@
 - hosts: all
   become: yes
   tasks:
-  - name: Ubuntu Install Nginx
+  - name: Ubuntu Install Apache 
     apt:
-      name=nginx
+      name=apache2
       state=latest
     when:
       ansible_os_family == "Debian"
     notify:
-      - web systemd
+      - web systemd apache2
   handlers:
-    - name: web systemd
+    - name: web systemd apache2
       systemd:
-        name: nginx
+        name: apache2
         enabled: yes
         state: started
