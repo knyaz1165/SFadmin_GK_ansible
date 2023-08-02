@@ -1,0 +1,39 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install elasticsearch on RedHat Family
+    shell: yum localinstall -y https://www.techplanet.pro/d/elasticsearch-7.17.1-x86_64.rpm
+    when:
+      ansible_os_family == "RedHat"
+    notify:
+      - elasticsearch systemd
+  - name: Install logstash on RedHat Family
+    shell: yum localinstall -y https://www.techplanet.pro/d/logstash-7.17.1-x86_64.rpm
+    when:
+      ansible_os_family == "RedHat"
+    notify:
+      - logstash systemd
+  - name: Install kibana on RedHat Family
+    shell: yum localinstall -y https://www.techplanet.pro/d/kibana-7.17.1-x86_64.rpm
+    when:
+      ansible_os_family == "RedHat"
+    notify:
+      - kibana systemd
+  handlers:
+  - name: elasticsearch systemd
+    systemd:
+      name: elasticsearch.service
+      enabled: yes
+      state: started
+  - name: logstash systemd
+    systemd:
+      name: logstash.service
+      enabled: yes
+      state: started
+  - name:  kibana systemd
+    systemd:
+      name: kibana.service
+      enabled: yes
+      state: started

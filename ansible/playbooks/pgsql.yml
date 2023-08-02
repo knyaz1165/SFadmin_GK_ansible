@@ -1,0 +1,45 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+  - name: "Add repo"
+    yum:
+      name: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+      state: present
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: "Install PostgreSQL client and server packages"
+    yum: "name={{ item }} state=present"
+    with_items:
+      - epel-release
+      - yum-utils      
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: "Enable repo"
+    shell: yum-config-manager --enable pgdg12
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: "Install postgres"
+    yum: "name={{ item }} state=present"
+    with_items:
+      - postgresql12-server
+      - postgresql12
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: "Init DB"
+    shell: /usr/pgsql-12/bin/postgresql-12-setup initdb
+    notify:
+      - postgres systemd
+    when:
+      ansible_os_family == "RedHat"
+  handlers:
+    - name: postgres systemd
+      systemd:
+        name: postgresql-12
+        enabled: yes
+        state: started
